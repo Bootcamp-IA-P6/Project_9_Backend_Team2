@@ -60,7 +60,7 @@ func main() {
 		}
 
 		videoID := extractVideoID(req.VideoURL)
-		
+
 		// A. Extraer comentarios (pedimos 10 para no saturar tu IA en pruebas)
 		comments, err := ytService.GetVideoComments(videoID, 10)
 		if err != nil {
