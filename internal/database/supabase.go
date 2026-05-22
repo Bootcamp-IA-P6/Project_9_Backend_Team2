@@ -25,13 +25,21 @@ func NewDatabaseClient(databaseURL string) (*DBClient, error) {
 	return &DBClient{Conn: db}, nil
 }
 
-//InsertarPrueba mete una fila de mentira para comprobar que tenemos permisos de escritura
-func (c *DBClient) InsertarPrueba() error {
-	// IMPORTANTE: En Postgres, si la tabla tiene mayúsculas, hay que ponerla entre comillas
+// GuardarResumenVideo guarda las métricas globales en la tabla Padre
+func (c *DBClient) GuardarResumenVideo(videoID string, totalComments int, promedioToxicidad float64, alertasCriticas int, healthScore float64) error {
+	// IMPORTANTE: Al igual que antes, usamos comillas dobles porque "VideoSummary" lleva mayúsculas
+	query := `INSERT INTO "VideoSummary" (video_id, total_comments, promedio_toxicidad, alertas_criticas, health_score) 
+			  VALUES ($1, $2, $3, $4, $5)`
+	
+	_, err := c.Conn.Exec(query, videoID, totalComments, promedioToxicidad, alertasCriticas, healthScore)
+	return err
+}
+
+// GuardarPrediccionComentario guarda los comentarios individuales en la tabla Hijo
+func (c *DBClient) GuardarPrediccionComentario(videoID string, commentID string, text string, isToxic bool) error {
 	query := `INSERT INTO "ToxicFilterAIPredictions" (comment_id, video_id, text, is_toxic) 
 			  VALUES ($1, $2, $3, $4)`
 	
-	// Metemos unos datos inventados
-	_, err := c.Conn.Exec(query, "comentario_test_01", "VIDEO_123", "Este es un comentario de prueba desde Go", false)
+	_, err := c.Conn.Exec(query, commentID, videoID, text, isToxic)
 	return err
 }
