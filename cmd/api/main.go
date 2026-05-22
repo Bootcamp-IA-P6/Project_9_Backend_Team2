@@ -37,7 +37,7 @@ func main() {
     config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
     
     router.Use(cors.New(config))
-	
+
 	// 1. Cargar entorno
 	godotenv.Load()
 	apiKey := os.Getenv("YOUTUBE_API_KEY")
@@ -63,17 +63,33 @@ func main() {
 	// 4. Levantar servidor
 	r := gin.Default()
 
-	// Configuración CORS
-	r.Use(func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-		c.Next()
-	})
+	// // Configuración CORS
+	// r.Use(func(c *gin.Context) {
+	// 	c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+	// 	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	// 	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+	// 	if c.Request.Method == "OPTIONS" {
+	// 		c.AbortWithStatus(204)
+	// 		return
+	// 	}
+	// 	c.Next()
+	// })
+
+	// --- CONFIGURACIÓN CORS MANUAL MEJORADA ---
+r.Use(func(c *gin.Context) {
+    // El asterisco (*) permite la conexión de Vercel y de Localhost al mismo tiempo
+    c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+    // Añadimos "Authorization" por si Supabase o alguna otra cosa lo necesita en las cabeceras
+    c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+    c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+    
+    // Esta es la parte clave que hace que no te falle en local
+    if c.Request.Method == "OPTIONS" {
+        c.AbortWithStatus(204)
+        return
+    }
+    c.Next()
+})
 
 	// 5. EL ENDPOINT MÁGICO
 	r.POST("/api/v1/analyze", func(c *gin.Context) {
