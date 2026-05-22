@@ -14,7 +14,7 @@ type YouTubeService struct {
 	client *yt.Service
 }
 
-// NewYouTubeService inicializa la conexión con Google usando tu API Key
+// NewYouTubeService inicializa la conexión con Google usando mi API Key
 func NewYouTubeService(apiKey string) (*YouTubeService, error) {
 	ctx := context.Background()
 	client, err := yt.NewService(ctx, option.WithAPIKey(apiKey))
