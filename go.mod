@@ -5,10 +5,7 @@ go 1.26.3
 require (
 	github.com/gin-gonic/gin v1.12.0
 	github.com/joho/godotenv v1.5.1
-<<<<<<< HEAD
-=======
 	github.com/lib/pq v1.12.3
->>>>>>> 946cd136eef6962b0ce1e2f1e309cbde1f3a9be3
 	google.golang.org/api v0.280.0
 )
 

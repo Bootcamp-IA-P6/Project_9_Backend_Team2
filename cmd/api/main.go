@@ -12,7 +12,7 @@ import (
 	"github.com/Bootcamp-IA-P6/Project_9_Backend_Team2/internal/youtube"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	
+
 	// IMPORT CORREGIDO CON LA RUTA REAL DE TU PROYECTO
 	"github.com/Bootcamp-IA-P6/Project_9_Backend_Team2/internal/database"
 )
@@ -81,13 +81,8 @@ func main() {
 		}
 
 		videoID := extractVideoID(req.VideoURL)
-<<<<<<< HEAD
 
-		// A. Extraer comentarios (pedimos 10 para no saturar tu IA en pruebas)
-=======
-		
 		// A. Extraer comentarios
->>>>>>> 946cd136eef6962b0ce1e2f1e309cbde1f3a9be3
 		comments, err := ytService.GetVideoComments(videoID, 10)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Fallo en YouTube"})
@@ -102,7 +97,7 @@ func main() {
 			analisis, err := aiService.EvaluateComment(comment.Text)
 			if err != nil {
 				log.Printf("Aviso: Fallo al analizar un comentario: %v", err)
-				continue 
+				continue
 			}
 
 			if analisis.EsToxico {
