@@ -13,6 +13,7 @@ import (
 	"github.com/Bootcamp-IA-P6/Project_9_Backend_Team2/internal/youtube"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/gin-contrib/cors"
 )
 
 // Función para extraer el ID del vídeo
@@ -25,6 +26,18 @@ func extractVideoID(videoURL string) string {
 }
 
 func main() {
+
+	router := gin.Default()
+
+    // --- CONFIGURACIÓN CORS ---
+    config := cors.DefaultConfig()
+    // Permite que cualquier frontend se conecte (ideal para presentaciones sin bloqueos)
+    config.AllowAllOrigins = true 
+    // Cabeceras permitidas
+    config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
+    
+    router.Use(cors.New(config))
+	
 	// 1. Cargar entorno
 	godotenv.Load()
 	apiKey := os.Getenv("YOUTUBE_API_KEY")
