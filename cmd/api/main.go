@@ -13,6 +13,12 @@ import (
 	"github.com/Bootcamp-IA-P6/Project_9_Backend_Team2/internal/youtube"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+<<<<<<< HEAD
+
+	// IMPORT CORREGIDO CON LA RUTA REAL DE TU PROYECTO
+	"github.com/Bootcamp-IA-P6/Project_9_Backend_Team2/internal/database"
+=======
+>>>>>>> 03abca6bc0bc5a9f7295c1fdc16d1547f08d8889
 )
 
 // Función para extraer el ID del vídeo
@@ -71,7 +77,12 @@ func main() {
 		}
 
 		videoID := extractVideoID(req.VideoURL)
+<<<<<<< HEAD
+
+		// A. Extraer comentarios
+=======
 // A. Extraer comentarios
+>>>>>>> 03abca6bc0bc5a9f7295c1fdc16d1547f08d8889
 		comments, err := ytService.GetVideoComments(videoID, 10)
 		if err != nil {
 			log.Printf("❌ Error de YouTube: %v", err)
