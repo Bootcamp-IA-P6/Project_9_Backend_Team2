@@ -56,27 +56,31 @@ func (s *AIService) EvaluateComment(text string) (AIResponse, error) {
         return AIResponse{}, fmt.Errorf("error decodificando respuesta de la IA: %v", err)
     }
 
-    // ==========================================
+   // ==========================================
     // 4. APLICAR EL UMBRAL DE DECISIÓN (THRESHOLD)
     // ==========================================
     umbralStr := os.Getenv("UMBRAL_TOXICIDAD")
-    umbral := 0.85 // Nuestro umbral estricto para evitar falsos positivos
+    umbral := 0.85 
     
     if val, err := strconv.ParseFloat(umbralStr, 64); err == nil {
         umbral = val
     }
 
-    // 1º Comprobamos si la API de Python clasificó el texto como tóxico
-    // (Usamos exactamente las mismas etiquetas que hay en la api de Hugging Face )
     esEtiquetaToxica := aiResp.EtiquetaModelo == "Toxic" || aiResp.EtiquetaModelo == "NEGATIVE"
 
     if esEtiquetaToxica {
-        // 2º Si es tóxico, le pasamos NUESTRO filtro. 
-        // ¿Está el modelo lo suficientemente seguro (>= 0.85)?
-        aiResp.EsToxico = aiResp.ScoreConfianza >= umbral
+        if aiResp.ScoreConfianza >= umbral {
+            // Es verdaderamente tóxico
+            aiResp.EsToxico = true
+        } else {
+            // Falso positivo detectado: El umbral lo salva
+            aiResp.EsToxico = false
+            aiResp.EtiquetaModelo = "Safe" // 👈 Sobrescribimos la etiqueta para "engañar" al frontend
+        }
     } else {
-        // 3º Si la etiqueta es sana (ej: "POSITIVE"), nos aseguramos de que sea false
+        // Era sano desde el principio
         aiResp.EsToxico = false
+        aiResp.EtiquetaModelo = "Safe" // 👈 Aseguramos que el texto siempre sea "Safe"
     }
     // ==========================================
 
